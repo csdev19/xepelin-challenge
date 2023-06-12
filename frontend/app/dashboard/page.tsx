@@ -1,6 +1,7 @@
 'use client';
 
 import { accountsService, localStorageService } from "@/services";
+import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from "react";
 
@@ -58,7 +59,14 @@ const Dashboard = () => {
             <div key={account.id}>
               <h1>Account name: {account.name}</h1>
               <h2>Account balance{account.balance}</h2>
-              <button type="button">Go to edit account</button>
+              <Link href={`/dashboard/transactions`}></Link>
+              <button
+                type="button"
+                onClick={() => router.push(`/dashboard/${account.id}`)}
+              >
+                Go to edit account
+              </button>
+
             </div>
           ))}
         </div>

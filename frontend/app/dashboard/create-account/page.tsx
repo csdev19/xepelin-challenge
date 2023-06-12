@@ -52,7 +52,12 @@ const CreateAccount = () => {
                 <input type="text" name="name" id="name" className="w-full py-4 px-8 bg-slate-200 placeholder:font-semibold rounded hover:ring-1 outline-blue-500 " placeholder="Account name" />
             </div>
             <div className="w-3/4 mt-4">
-                <button type="submit" className="py-4 bg-blue-400 w-full rounded text-blue-50 font-bold hover:bg-blue-700">Create Account</button>
+                <button 
+                  type="submit" 
+                  className="py-4 bg-blue-400 w-full rounded text-blue-50 font-bold hover:bg-blue-700"
+                >
+                  Create Account
+                </button>
             </div>
         </form>
       </div>
