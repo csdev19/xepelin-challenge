@@ -1,0 +1,203 @@
+version: '2'
+name: xepelinbank
+services:
+
+  authentication:
+    container_name: authentication_app
+    build:
+      context: .
+      dockerfile: ./apps/authentication/Dockerfile
+      target: development
+    command: npm run start:dev authentication
+    ports:
+      - '${PORT_AUTHENTICATION_APP}:${PORT_AUTHENTICATION_APP}'
+    expose:
+      - '${PORT_AUTHENTICATION_APP}'
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_PORT=5432
+      - PG_HOST=db
+    depends_on:
+      - redis
+      - rabbitmq
+      - db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    # networks:
+    #   - webnet
+
+  persons:
+    container_name: persons_app
+    build:
+      context: .
+      dockerfile: ./apps/persons/Dockerfile
+      target: development
+    command: npm run start:dev persons
+    ports:
+      - '${PORT_PERSONS_APP}:${PORT_PERSONS_APP}'
+    expose:
+      - '${PORT_PERSONS_APP}'
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_PORT=5432
+      - PG_HOST=db
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  accounts:
+    container_name: accounts_app
+    build:
+      context: .
+      dockerfile: ./apps/accounts/Dockerfile
+      target: development
+    command: npm run start:dev accounts
+    ports:
+      - '${PORT_ACCOUNTS_APP}:${PORT_ACCOUNTS_APP}'
+    expose:
+      - '${PORT_ACCOUNTS_APP}'
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_PORT=5432
+      - PG_HOST=db
+    depends_on:
+      #### We need to uncomment this while we are using the local environment ####
+      - db
+      - rabbitmq
+      - redis
+      - authentication
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3-management"
+    expose:
+      - '15671:15672'
+    ports:
+      - '${RABBIT_MQ_PORT}:5672'
+      - '15672:15672'
+    volumes:
+      - 'rabbitmq_data:/data'
+    # networks:
+    #   - webnet
+
+  redis:
+    container_name: redis_xepelin
+    image: "redis:latest"
+    hostname: redis
+    ports:
+      - '${REDIS_PORT}:6379'
+    volumes:
+      - 'redis_data:/data'
+    # networks:
+    #   - webnet
+
+
+  ### Local database: Postgres ###
+  #### We need to uncomment this while we are using the local environment ####
+  db:
+    # image: postgres
+    container_name: db
+    image: postgres:12
+    # hostname: postgres
+    environment:
+      # POSTGRES_USER: "${DB_USERNAME}"
+      # POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      # POSTGRES_DB: "xepelin"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # networks:
+    #   - webnet
+
+
+
+volumes:
+  ### Local database: Postgres ###
+  #### We need to uncomment this while we are using the local environment ####
+  pgdata: {}
+
+  rabbitmq_data: {}
+    # driver: local
+  redis_data: {}
+    # driver: local
+
+# networks:
+#   webnet:
+
+  # accounts:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/accounts/Dockerfile
+  #     target: development
+  #   command: npm run start:dev accounts
+  #   ports:
+  #     - '${PORT_ACCOUNTS_APP}:${PORT_ACCOUNTS_APP}'
+  #   depends_on:
+  #     #### We need to uncomment this while we are using the local environment ####
+  #     - database_local
+
+  #     - rabbitmq
+  #     - redis
+  #     - authentication
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+
+  # transactions:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/transactions/Dockerfile
+  #     target: development
+  #   command: npm run start:dev transactions
+  #   ports:
+  #     - '${PORT_TRANSACTION_APP}:${PORT_TRANSACTION_APP}'
+  #   depends_on:
+  #     #### We need to uncomment this while we are using the local environment ####
+  #     - database_local
+
+  #     - rabbitmq
+  #     - redis
+  #     - authentication
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+
+  # employees:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/employees/Dockerfile
+  #     target: development
+  #   command: npm run start:dev employees
+  #   env_file:
+  #     - ./libs/common/src/config/env/test.env
+  #   depends_on:
+  #     - rabbitmq
+  #     - redis
+  #     - auth
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - '3031:3031'
+

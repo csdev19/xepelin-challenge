@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/backend/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/backend/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/authentication",
+  "projects": {
+    "backend": {
+      "type": "application",
+      "root": "apps/backend",
+      "entryFile": "main",
+      "sourceRoot": "apps/backend/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/backend/tsconfig.app.json"
+      }
+    },
+    "accounts": {
+      "type": "application",
+      "root": "apps/accounts",
+      "entryFile": "main",
+      "sourceRoot": "apps/accounts/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/accounts/tsconfig.app.json"
+      }
+    },
+    "transactions": {
+      "type": "application",
+      "root": "apps/transactions",
+      "entryFile": "main",
+      "sourceRoot": "apps/transactions/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/transactions/tsconfig.app.json"
+      }
+    },
+    "authentication": {
+      "type": "application",
+      "root": "apps/authentication",
+      "entryFile": "main",
+      "sourceRoot": "apps/authentication/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/authentication/tsconfig.app.json"
+      }
+    },
+    "persons": {
+      "type": "application",
+      "root": "apps/persons",
+      "entryFile": "main",
+      "sourceRoot": "apps/persons/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/persons/tsconfig.app.json"
+      }
+    }
+  }
+}
