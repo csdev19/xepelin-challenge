@@ -84,6 +84,32 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
 
+  transactions:
+    container_name: transaction_app
+    build:
+      context: .
+      dockerfile: ./apps/transactions/Dockerfile
+      target: development
+    command: npm run start:dev transactions
+    ports:
+      - '${PORT_TRANSACTION_APP}:${PORT_TRANSACTION_APP}'
+    environment:
+      - DB_TYPE=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_PORT=5432
+      - PG_HOST=db
+    depends_on:
+      #### We need to uncomment this while we are using the local environment ####
+      - db
+      - rabbitmq
+      - redis
+      - authentication
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
   rabbitmq:
     container_name: rabbitmq
     image: "rabbitmq:3-management"
